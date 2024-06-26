@@ -13,14 +13,17 @@ class BookIn(BaseModel):
 
 
 class BookOut(BookIn):
-    id: int
-
+    authors: List[str] = None
 
 class BookUpdate(BookIn):
     book_title: Optional[str] = None
     book_description: Optional[str] = None
     book_genres: Optional[List[str]] = None
-    authors_id: Optional[List[str]] = None
+    authors_id: Optional[List[int]] = None
+
+class Author(BaseModel):
+    id: int
+    author_name: str
 
 
 books = Table(

@@ -1,6 +1,6 @@
 from .database import database
 from .models import authors, AuthorIn
-
+from sqlalchemy import select
 
 async def add_author(payload: AuthorIn):
     query = authors.insert().values(**payload.dict())
@@ -13,7 +13,7 @@ async def get_author(id):
 
 
 async def get_all_authors():
-    query = authors.select()
+    query = select([authors]).order_by(authors.c.id.asc())
     return await database.fetch_all(query=query)
 
 

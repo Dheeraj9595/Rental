@@ -5,9 +5,11 @@ from sqlalchemy.orm import sessionmaker
 
 from dotenv import dotenv_values
 
-env = dotenv_values(".env")
+# env = dotenv_values(".env")
 
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
+# SQLALCHEMY_DATABASE_URL = "postgresql://postgres:Root*1234@localhost:5432/microservice_author"
+SQLALCHEMY_DATABASE_URL = os.environ.get("DATABASE_URL")
+
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

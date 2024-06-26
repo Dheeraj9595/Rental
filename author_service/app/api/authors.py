@@ -39,13 +39,17 @@ async def get_author(author_id: int):
 async def update_author(author_id: int, payload: AuthorUpdate):
     author = await db_manager.get_author(author_id)
 
-    if not author:
+    if not author:  
         HTTPException(status_code=404, detail="Author not found")
 
     update_data = payload.dict(exclude_unset=True)
     author_id_db = AuthorIn(**author)
-    update_author = author_id_db.copy(update=update_data)
-    return await db_manager.update_author(author_id, update_author)
+    updated_author_data = author_id_db.copy(update=update_data)
+    
+    await db_manager.update_author(author_id, updated_author_data)
+    
+    response = AuthorOut(id=author_id, **updated_author_data.dict())
+    return response
 
 
 @authors.delete("/delete/{author_id}/", response_model=None)
