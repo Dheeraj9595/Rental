@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import UserManager
+from .constants import CLOTHING_SIZE_CHOICES  # Import the size choices
 
 
 # # Create your models here.
@@ -149,6 +150,25 @@ class House(models.Model):
 
     def __str__(self):
         return str(self.house_id)
+
+
+class Cloth(models.Model):
+
+    cloth_id = models.AutoField(primary_key=True)
+    user_email = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    size = models.CharField(max_length=3, choices=CLOTHING_SIZE_CHOICES)  # Size of the cloth
+    type = models.CharField(max_length=50)  # Type of cloth (e.g., Shirt, Pants, Dress)
+    brand = models.CharField(max_length=50, blank=True, null=True)  # Brand of the cloth
+    material = models.CharField(max_length=50, blank=True, null=True)  # Material (e.g., Cotton, Silk)
+    color = models.CharField(max_length=30, blank=True, null=True)  # Color of the cloth
+    rent_cost = models.DecimalField(max_digits=10, decimal_places=2)  # Rental cost
+    availability = models.BooleanField(default=True)  # Availability status
+    description = models.TextField(blank=True, null=True)  # Description of the cloth
+    img = models.ImageField(upload_to='cloth_images/', height_field=None, width_field=None, max_length=100)  # Image of the cloth
+    date_added = models.DateField(auto_now=True, auto_now_add=False)  # Date when the cloth was added
+
+    def __str__(self):
+        return f"{self.type} - {self.size} - {self.cloth_id}"
 
 
 class Contact(models.Model):
