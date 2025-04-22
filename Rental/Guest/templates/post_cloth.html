@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+
+<script type="text/javascript">
+function PreviewImage() {
+    var oFReader = new FileReader();
+    oFReader.readAsDataURL(document.getElementById("uploadImage").files[0]);
+    oFReader.onload = function (oFREvent) {
+        document.getElementById("uploadPreview").src = oFREvent.target.result;
+    };
+};
+</script>
+
+<div class="w3-container" style="margin: 2% 10%;">
+    <h2 style="text-align: center;"><b>Post ad for Clothes</b></h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form action="/post-cloth/" method="post" enctype="multipart/form-data">
+        <div class="container">
+            {% csrf_token %}
+            <label><b>Type</b></label>
+            <input type="text" name="type" placeholder="e.g., Shirt" required>
+
+            <label><b>Size</b></label>
+            <input type="text" name="size" placeholder="S / M / L / XL" required>
+
+            <label><b>Brand</b></label>
+            <input type="text" name="brand" placeholder="e.g., Nike">
+
+            <label><b>Material</b></label>
+            <input type="text" name="material" placeholder="e.g., Cotton">
+
+            <label><b>Color</b></label>
+            <input type="text" name="color" placeholder="e.g., Black">
+
+            <label><b>Rent Cost (₹)</b></label>
+            <input type="number" name="rent_cost" placeholder="Enter rent cost" required>
+
+            <label><input type="checkbox" name="availability"> Available for Rent</label><br><br>
+
+            <label><b>Description</b></label>
+            <textarea name="description" placeholder="Additional details..." style="width: 100%"></textarea>
+
+            <label><b>Upload Picture</b></label><br>
+            <input id="uploadImage" type="file" name="img" onchange="PreviewImage();" required />
+            <img id="uploadPreview" style="width: 100px; height: 100px;" />
+
+            <button class="btn btn-primary btn-block" type="submit">Post</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

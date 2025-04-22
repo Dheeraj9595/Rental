@@ -5,5 +5,6 @@ from .models import *
 
 admin.site.register(User)
 admin.site.register(House)
+admin.site.register(Cloth)
 admin.site.register(Room)
 admin.site.register(Contact)

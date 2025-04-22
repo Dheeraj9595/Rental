@@ -250,6 +250,52 @@ def post(request):
             return HttpResponse(status=500)
 
 
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.contrib import messages
+from user.models import Cloth
+from user.models import User
+
+@login_required(login_url='/login')
+def post_cloth(request):
+    if request.method == "GET":
+        context = {'user': request.user}
+        return render(request, 'post_cloth.html', context)
+    
+    elif request.method == "POST":
+        try:
+            size = request.POST['size']
+            cloth_type = request.POST['type']
+            brand = request.POST['brand']
+            material = request.POST['material']
+            color = request.POST['color']
+            rent_cost = request.POST['rent_cost']
+            availability = request.POST.get('availability') == 'on'
+            description = request.POST['description']
+            img = request.FILES['img']
+
+            user_obj = User.objects.get(email=request.user.email)
+
+            cloth = Cloth.objects.create(
+                user_email=user_obj,
+                size=size,
+                type=cloth_type,
+                brand=brand,
+                material=material,
+                color=color,
+                rent_cost=rent_cost,
+                availability=availability,
+                description=description,
+                img=img
+            )
+            messages.success(request, 'Cloth posted successfully.')
+            return render(request, 'post_cloth.html')
+
+        except Exception as e:
+            return HttpResponse(f"Error: {str(e)}", status=500)
+
+
 @login_required(login_url='/login')
 def posth(request):
     if request.method == "GET":

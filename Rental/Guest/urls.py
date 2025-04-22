@@ -40,6 +40,8 @@ urlpatterns = [
     re_path(r'^login', views.login_view),
     re_path(r'^profile/',views.profile),
     re_path(r'^post/$', views.post),
+    re_path(r'cloth/', views.post_cloth),
+
     re_path(r'^posth/$', views.posth),
     re_path(r'^logout', LogoutView.as_view()),
     re_path(r'^descr/',views.descr),
