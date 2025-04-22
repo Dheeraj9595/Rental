@@ -258,7 +258,6 @@ from user.models import Cloth
 from user.models import User
 
 
-#new implimentation
 @login_required(login_url='/login')
 def post_cloth(request):
     if request.method == "GET":
