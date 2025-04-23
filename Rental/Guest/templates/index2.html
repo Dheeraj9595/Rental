@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block style %}
+<style>
+    .w3-cloth-container {
+        margin: 2% 5%;
+    }
+
+    @media only screen and (max-width: 600px) {
+        .w3-cloth-container {
+            margin: 0!important;
+            padding: 0!important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div>
+    <div class="jumbotron text-center" style="margin-bottom:0;">
+        <h1>Clothing Rental</h1>
+        <p>Wear What You Love</p>
+    </div>
+
+    <div class="w3-container w3-cloth-container">
+        {% if cloths %}
+        <h5 class="my-4 text-center">Clothes - Available for You</h5>
+        <div class="w3-row-padding">
+            <div class="col carousel slide my-3" data-ride="carousel">
+                <div class="carousel-inner no-padding">
+                    <div class="carousel-item active">
+                        {% for i in cloths.0 %}
+                        <div class="w3-third w3-container w3-margin-bottom">
+                            <div class="card" style="background-color: #f5f5f5;">
+                                <img src="{{ i.img.url }}" alt="Cloth Image" style="height: 250px; width: 100%;">
+                                <div class="card-body">
+                                    <h5 class="card-title"><b><h3>₹{{ i.rent_cost }}</h3></b></h5>
+                                    <p class="card-text">{{ i.description|slice:"0:30" }}...</p>
+                                    <p><b>{{ i.brand }}</b> • {{ i.color }} • {{ i.size }}</p>
+                                    <form action="/cloth_descr" method="get" style="margin-bottom: 5px;">
+                                        <button name="id" value="{{ i.cloth_id }}" style="background-color: grey;" class="btn btn-sm btn-dark">Quick view</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% if forloop.counter|divisibleby:3 and forloop.counter > 0 and forloop.counter < cloths.2 %}
+                    </div>
+                    <div class="carousel-item">
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

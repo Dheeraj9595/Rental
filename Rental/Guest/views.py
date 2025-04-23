@@ -13,6 +13,7 @@ from datetime import *
 import re
 import os
 from django.contrib import messages
+from django.core.serializers import serialize
 
 def index(request):
     template = loader.get_template('index.html')
@@ -31,6 +32,22 @@ def index(request):
         houses = [house, range(1, nslide), n]
         context.update({'house': houses})
     return HttpResponse(template.render(context, request))
+
+
+def index2(request):
+    template = loader.get_template('index2.html')
+    context = {}
+
+    cloths = Cloth.objects.all()
+    if cloths:
+        n = len(cloths)
+        nslide = n // 3 + (n % 3 > 0)
+        cloths_data = [cloths, range(1, nslide), n]
+        context.update({'cloths': cloths_data})
+
+    return HttpResponse(template.render(context, request))
+
+
 
 
 def home(request):
@@ -121,6 +138,24 @@ def descr(request):
             context.update({'type': 'House'})
             user = User.objects.get(email=house.user_email)
     context.update({'user': user})
+    return HttpResponse(template.render(context, request))
+
+
+def cloth_descr(request):
+    template = loader.get_template('cloth_desc.html')
+    context = {}
+
+    if request.method == 'GET':
+        cloth_id = request.GET.get('id')
+        try:
+            cloth = Cloth.objects.get(cloth_id=cloth_id)
+            context.update({'val': cloth})
+            context.update({'type': 'Cloth'})
+            user = User.objects.get(email=cloth.user_email)
+            context.update({'user': user})
+        except Cloth.DoesNotExist:
+            return HttpResponse("Cloth not found", status=404)
+
     return HttpResponse(template.render(context, request))
 
 
@@ -249,13 +284,15 @@ def post(request):
         except Exception as e:
             return HttpResponse(status=500)
 
+from Guest.serializers import ClothSerializer
+from django.http import JsonResponse
+# @login_required(login_url='/login')
+def get_cloth_list(request):
+    cloth_list = Cloth.objects.all()
+    serializer = ClothSerializer(cloth_list, many=True) # Serialize the queryset to JSON
+    return JsonResponse({'cloth_list': serializer.data}, safe=False)
 
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.contrib import messages
-from user.models import Cloth
-from user.models import User
+
 
 
 @login_required(login_url='/login')
@@ -379,3 +416,54 @@ def login_view(request):
             'msg': 'Email and password, you entered, did not matched.'
         }
         return HttpResponse(template.render(context, request))
+    
+
+
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.contrib.auth import authenticate
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import status
+
+
+
+from rest_framework import viewsets
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
+@method_decorator(csrf_exempt, name='dispatch')
+class ClothViewSet(viewsets.ModelViewSet):
+    queryset = Cloth.objects.all()
+    serializer_class = ClothSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user_email=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user_email=self.request.user)
+
+import json
+
+@csrf_exempt
+def generate_token(request):
+    data = json.loads(request.body)
+    email = data.get('email')
+    password = data.get('password')
+    if email is None or password is None:
+        return JsonResponse({"error": "Email and password are required."}, status=400)
+    user = User.objects.get(email=email)
+    if user is None:
+        return JsonResponse({"error": "User not found."}, status=404)
+    try:
+        token = Token.objects.get(user=user)
+    except Token.DoesNotExist:  
+        token = Token.objects.create(user=user)
+    return JsonResponse({"token": f"Token {token.key}"}, status=200)

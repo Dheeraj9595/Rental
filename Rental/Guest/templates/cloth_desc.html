@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+<div class="w3-container" style="margin-top:1%; margin-left: 10%; margin-right: 10%; margin-bottom: 1%;">
+
+    <h2 style="margin-left:10px;">Cloth Description</h2>
+    <div class="row w3-about-container">
+        <div class="col-md-6 col-sm-12">
+            <img src="{{val.img.url}}" width="100%" height="365px;">
+        </div>
+        <div class="col-md-6 col-sm-12 about-text-container">
+            <h3 class="card-title">
+                <span>
+                    <b>
+                        <h3>₹ {{val.rent_cost}}/-</h3>
+                    </b>
+                </span>
+            </h3>
+            <p>{{val.brand}} - {{val.type}} - Size {{val.size}}</p>
+            <p class="card-text">{{val.description}}</p>
+            <p>{{val.color}}, {{val.material}}</p>
+            <hr>
+            <h5 class="card-title">
+                <span>
+                    <p>
+                        <b>
+                            <h3>Posted by</h3>
+                        </b>
+                    </p>
+                </span>
+            </h5>
+            <p>{{user.name}}</p>
+            <p>{{user.location}}, {{user.city}}, {{user.state}}</p>
+            <p style="float: right;"><b>{{val.date}}</b></p>
+            <p><b>Ad id <u>{{val.cloth_id}}</u></b></p>
+            <p style="float: right;"><a href="/contact">report this ad</a></p>
+        </div>
+    </div>
+    <hr>
+    <div class="row w3-about-container">
+        <div class="col-md-6 col-sm-12 about-text-container">
+            <h3 class="card-title"><b>Details</b></h3>
+            <br>
+            <table style="width: 90%; margin-right: 5%;">
+                <tr>
+                    <td style="width: 25%; height: 40px;">Type:</td>
+                    <td style="width: 30%; height: 40px;">{{val.type}}</td>
+                    <td style="width: 25%; height: 40px;">Brand:</td>
+                    <td style="width: 25%; height: 40px;">{{val.brand}}</td>
+                </tr>
+                <tr>
+                    <td style="width: 25%; height: 40px;">Size:</td>
+                    <td style="width: 30%; height: 40px;">{{val.size}}</td>
+                    <td style="width: 25%; height: 40px;">Color:</td>
+                    <td style="width: 25%; height: 40px;">{{val.color}}</td>
+                </tr>
+                <tr>
+                    <td style="width: 25%; height: 40px;">Material:</td>
+                    <td style="width: 30%; height: 40px;">{{val.material}}</td>
+                    <td style="width: 25%; height: 40px;">Available:</td>
+                    <td style="width: 25%; height: 40px;">{{val.availability|yesno:"Yes,No"}}</td>
+                </tr>
+                <tr>
+                    <td style="width: 25%; height: 40px;">Rent Cost:</td>
+                    <td style="width: 30%; height: 40px;">₹ {{val.rent_cost}}</td>
+                    <td style="width: 25%; height: 40px;">Date posted:</td>
+                    <td style="width: 25%; height: 40px;">{{val.date}}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <h3 class="card-title"><b>Author's Info</b></h3>
+            <p>{{user.name}}</p>
+            <p>{{user.location}}, {{user.city}}, {{user.state}}</p>
+            <p>{{user.email}}</p>
+            <p>Contact no. {{user.number}}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
