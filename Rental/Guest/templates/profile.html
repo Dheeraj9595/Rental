@@ -174,7 +174,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent" style="margin-top: 10px; margin-left: 80px;">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="/index">Home</a>
+                <a class="nav-link" href="/index2">Home</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/home">Explore</a>
@@ -244,13 +244,13 @@
                 <div class="portlet light bordered">
                     <div class="row list-separated profile-stat">
                         <div class="col-md-4 col-sm-4 col-xs-6">
-                            <div class="uppercase profile-stat-title"> {{roomno}} </div>
-                            <div class="uppercase profile-stat-text">Room posted </div>
+                            <div class="uppercase profile-stat-title"> {{clothno}} </div>
+                            <div class="uppercase profile-stat-text">Cloth posted </div>
                         </div>
-                        <div class="col-md-4 col-sm-4 col-xs-6">
+                        <!-- <div class="col-md-4 col-sm-4 col-xs-6">
                             <div class="uppercase profile-stat-title"> {{houseno}} </div>
                             <div class="uppercase profile-stat-text"> House posted </div>
-                        </div>
+                        </div> -->
                         <div class="col-md-4 col-sm-4 col-xs-6">
                             <div class="uppercase profile-stat-title"> {{reportno}} </div>
                             <div class="uppercase profile-stat-text"> Reports </div>
@@ -307,10 +307,10 @@
                                             <p>{{i.cost}}</p>
                                             <p>{{i.location}}</p>
                                             <form action="/deleter">
-                                                <button name="id" value="{{i.room_id}}"  type="submit" class="btn btn-sm w3-dark-grey">Delete</button>
+                                                <button name="id" value="{{i.cloth_id}}"  type="submit" class="btn btn-sm w3-dark-grey">Delete</button>
                                             </form>
-                                            <form action="/descr"  style="margin-bottom: 5px;">
-                                                <button name="id" value="{{i.room_id}}" class="btn btn-sm w3-blue"> Quick view</button>
+                                            <form action="/cloth_descr"  style="margin-bottom: 5px;">
+                                                <button name="id" value="{{i.cloth_id}}" class="btn btn-sm w3-blue"> Quick view</button>
                                             </form> 
                                         </div>
                                     </div>
@@ -328,7 +328,7 @@
                 {% endif %}
 
                  <div class="profile-userbuttons">
-                    <a href="/post/"><button type="submit" class="btn btn-success btn-sm">Post ad for Apartment</button>
+                    <!-- <a href="/post/"><button type="submit" class="btn btn-success btn-sm">Post ad for Apartment</button> -->
                     </a>
                 </div>
 
@@ -369,7 +369,7 @@
 
 
                 <div class="profile-userbuttons">
-                    <a href="/posth/"><button type="submit" class="btn btn-success btn-sm">Post ad for House</button></a>
+                    <a href="/cloth/"><button type="submit" class="btn btn-success btn-sm">Post ad for cloth</button></a>
                 </div>
                 <!-- {% if room%}
                 <br>

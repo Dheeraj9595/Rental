@@ -35,8 +35,8 @@
                 <form class="form-inline" style="width: 100%;"  method="GET" action="/search" >
                     <input type="text" class="form-control " style="width: 55%;"   name="q" placeholder="Search here..." {%if q%}value="{{q}}"{%endif%} />
                     <select name="type"  style="width: 30%;" class=" col-md-3 col-sm-6 selectpicker form-control" data-live-search="true">
-                        <option value="House">House</option>
-                        <option value="Apartment">Apartment</option>
+                        <option value="House">Cloths</option>
+                        <!-- <option value="Apartment">Apartment</option> -->
                     </select> 
                     <span class="input-group-btn" style="width: 15%;">
                         <button style="width: 100%;border-radius: 4px;" class="btn btn-primary" type="submit">GO!</button>
@@ -72,20 +72,20 @@
                                     <span id="pricepr{{i.id}}">
                                         <p>
                                             <b>
-                                        <h3>₹{{i.cost}}</h3> </b></p>
+                                        <h3>₹{{i.rent_cost}}</h3> </b></p>
                                     </span>
                                 </h5>
                                 <p class="card-text">{{i.desc|slice:"0:20"}}...</p>
-                                <p>{{i.location}}, {{i.city}}, {{i.state}}</p>
-                                {%if type == 'House' %}
-                                <form action="/descr"  style="margin-bottom: 5px;">
-                                    <button name="id" value="{{i.house_id}}" style="background-color: grey"> Quick view</button>
+                                <p>{{i.type}}, {{i.brand}}, {{i.description}}</p>
+                                <!-- {%if type == 'House' %} -->
+                                <form action="/cloth_descr"  style="margin-bottom: 5px;">
+                                    <button name="id" value="{{i.cloth_id}}" style="background-color: grey"> Quick view</button>
                                 </form>
-                                {%else%}
+                                <!-- {%else%}
                                 <form action="/descr"  style="margin-bottom: 5px;">
                                     <button name="id" value="{{i.room_id}}" style="background-color: grey"> Quick view</button>
                                 </form>
-                                {%endif%}
+                                {%endif%} -->
                             </div>
                         </div>
                     </div>

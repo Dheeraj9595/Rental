@@ -66,12 +66,9 @@ def search(request):
         context.update({'type': typ})
         context.update({'q':q})
         results={}
-        if typ == 'House' and (bool(House.objects.filter(location=q)) or bool(House.objects.filter(city=q))):
-            results = House.objects.filter(location=q)
-            results = results | House.objects.filter(city=q)
-        elif typ == 'Apartment'  and (bool(Room.objects.filter(location=q)) or bool(House.objects.filter(city=q))):
-            results = Room.objects.filter(location=q)
-            results = results | Room.objects.filter(city=q)
+        (bool(Cloth.objects.filter(type=q)) or bool(Cloth.objects.filter(brand=q)))
+        results = Cloth.objects.filter(type=q)
+        results = results | Cloth.objects.filter(brand=q)
 
         
         if bool(results)== False:
@@ -88,10 +85,10 @@ def about(request):
     template = loader.get_template('about.html')
     context = {}
 
-    room = Room.objects.all()
+    room = Cloth.objects.all()
     if bool(room):
         context.update({'room': room})
-    house = House.objects.all()
+    house = Cloth.objects.all()
     if bool(house):
         context.update({'house': house})
     return HttpResponse(template.render(context, request))
@@ -213,27 +210,27 @@ def register(request):
 @login_required(login_url='/login')
 def profile(request):
     report = Contact.objects.filter(email=request.user.email)
-    room = Room.objects.filter(user_email=request.user)
+    cloth = Cloth.objects.filter(user_email=request.user)
     house = House.objects.filter(user_email=request.user)
-    roomcnt = room.count()
+    clothno = cloth.count()
     housecnt = house.count()
     reportcnt = report.count()
     rooms = []
     houses = []
-    if bool(room):
-        n = len(room)
+    if bool(cloth):
+        n = len(cloth)
         nslide = n // 3 + (n % 3 > 0)
-        rooms = [room, range(1, nslide), n]
-    if bool(house):
-        n = len(house)
-        nslide = n // 3 + (n % 3 > 0)
-        houses = [house, range(1, nslide), n]
+        rooms = [cloth, range(1, nslide), n]
+    # if bool(house):
+    #     n = len(house)
+    #     nslide = n // 3 + (n % 3 > 0)
+    #     houses = [house, range(1, nslide), n]
         
     context = {
         'user': request.user,
         'report': report,
         'reportno': reportcnt,
-        'roomno': roomcnt,
+        'clothno': clothno,
         'houseno': housecnt
     }
     context.update({'room': rooms})
@@ -315,15 +312,15 @@ def post_cloth(request):
             user_obj = User.objects.get(email=request.user.email)
 
             cloth = Cloth.objects.create(
-                user_email=user_obj,
+                user_email=user_obj.lower(),
                 size=size,
-                type=cloth_type,
-                brand=brand,
-                material=material,
-                color=color,
+                type=cloth_type.lower(),
+                brand=brand.lower(),
+                material=material.lower(),
+                color=color.lower(),
                 rent_cost=rent_cost,
                 availability=availability,
-                description=description,
+                description=description.lower(),
                 img=img  # img will be None if not provided
             )
             messages.success(request, 'Cloth posted successfully.')
@@ -383,9 +380,9 @@ def posth(request):
 def deleter(request):
     if request.method == 'GET':
         id = request.GET['id']
-        instance = Room.objects.get(room_id=id)
+        instance = Cloth.objects.get(cloth_id=id)
         instance.delete()
-        messages.success(request, 'Appartment details deleted successfully..')
+        messages.success(request, 'Cloth details deleted successfully..')
     return redirect('/profile')
 
 
