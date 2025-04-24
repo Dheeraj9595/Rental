@@ -49,7 +49,6 @@ def index2(request):
 
 
 
-
 def home(request):
     template = loader.get_template('home.html')
     context = {}
@@ -311,7 +310,7 @@ def post_cloth(request):
             rent_cost = request.POST['rent_cost']
             availability = request.POST.get('availability') == 'on'
             description = request.POST['description']
-            img = request.FILES['img']
+            img = request.FILES.get('img')  # Use get() to make it optional
 
             user_obj = User.objects.get(email=request.user.email)
 
@@ -325,7 +324,7 @@ def post_cloth(request):
                 rent_cost=rent_cost,
                 availability=availability,
                 description=description,
-                img=img
+                img=img  # img will be None if not provided
             )
             messages.success(request, 'Cloth posted successfully.')
             return render(request, 'post_cloth.html')
