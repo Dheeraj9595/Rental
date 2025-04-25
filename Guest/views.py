@@ -246,16 +246,16 @@ def post(request):
     elif request.method == "POST":
         try:
             dimention = request.POST['dimention']
-            location = request.POST['location'].lower()
-            city = request.POST['city'].lower()
-            state = request.POST['state'].lower()
+            location = request.POST['location']
+            city = request.POST['city']
+            state = request.POST['state']
             cost = request.POST['cost']
-            hall = request.POST['hall'].lower()
-            kitchen = request.POST['kitchen'].lower()
-            balcany = request.POST['balcany'].lower()
+            hall = request.POST['hall']
+            kitchen = request.POST['kitchen']
+            balcany = request.POST['balcany']
             bedroom = request.POST['bedroom']
-            ac = request.POST['AC'].lower()
-            desc = request.POST['desc'].upper()
+            ac = request.POST['AC']
+            desc = request.POST['desc']
             img = request.FILES['img']
             user_obj = User.objects.filter(email=request.user.email)[0]
             bedroom = int(bedroom)
