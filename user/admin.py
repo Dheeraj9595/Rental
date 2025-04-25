@@ -11,7 +11,7 @@ admin.site.register(Contact)
 
 from django.contrib import admin
 from user.models import Cloth
-
+from user.models import CarouselImages
 @admin.register(Cloth)
 class ClothAdmin(admin.ModelAdmin):
     list_display = ('type', 'user_email', 'is_approved', 'availability', 'date_added')
@@ -27,3 +27,8 @@ class ClothAdmin(admin.ModelAdmin):
         queryset.update(is_approved=False)
     reject_cloths.short_description = "Mark selected cloths as rejected"
 
+@admin.register(CarouselImages)
+class CarouselImagesAdmin(admin.ModelAdmin):
+    list_display = ['title', 'is_active', 'priority', 'created_at']
+    list_editable = ['is_active', 'priority']
+    ordering = ['priority']

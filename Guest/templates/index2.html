@@ -3,15 +3,65 @@
 
 {% block style %}
 <style>
-    .w3-cloth-container {
-        margin: 2% 5%;
+    .carousel-item img {
+        height: 300px;
+        object-fit: cover;
     }
 
-    @media only screen and (max-width: 600px) {
-        .w3-cloth-container {
-            margin: 0!important;
-            padding: 0!important;
-        }
+    .carousel-indicators li {
+        background-color: #000;
+    }
+
+    .carousel-indicators {
+        transform: translate(1px, 42px);
+    }
+
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+        text-align: center;
+    }
+
+    .jumbotron {
+        background: linear-gradient(to right, #ff7e5f, #feb47b);
+        color: white;
+        height: 200px;
+    }
+
+    .jumbotron2 {
+        background: linear-gradient(to right, #fdf2f2, #feb47b);
+        color: white;
+        margin-top: .9px;
+        height: 163px;
+        display: flex;
+    }
+
+    .btn-dark {
+        background-color: #333;
+        border: none;
+    }
+
+    .btn-dark:hover {
+        background-color: #555;
+    }
+    .heading {
+        font-family: 'Poppins', sans-serif;
+        font-size: 2.0rem;
+        color: #222;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .carousel-item img {
+        height: 150px; /* adjust height as needed */
+        width: 100%;
+        object-fit: cover;  /* Makes sure image covers the area nicely */
+        object-position: center;  /* Center the image */
+        border-radius: 10px;  /* Optional: rounded corners */
+        margin-top: 0px;
     }
 </style>
 {% endblock %}
@@ -19,41 +69,75 @@
 {% block body %}
 <div>
     <div class="jumbotron text-center" style="margin-bottom:0;">
-        <h1>Clothing Rental</h1>
-        <p>Wear What You Love</p>
+        <h1 class="my-4 text-center heading">Rented Cloths The New Era of Clothing</h1>
+    </div>
+    <div id="summerCarousel" class="carousel slide jumbotron2 text-center" data-ride="carousel" style="margin-bottom:0;">
+        <ol class="carousel-indicators">
+            {% for i in images %}
+            <li data-target="#summerCarousel" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
+            {% endfor %}
+        </ol>
+        <div class="carousel-inner">
+            {% for image in images %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <img src="{{ image.image.url }}" class="d-block w-100" alt="Summer Special Cloth">
+            </div>
+            {% endfor %}
+        </div>
+        <a class="carousel-control-prev" href="#summerCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#summerCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
     </div>
 
-    <div class="w3-container w3-cloth-container">
+    <div class="container my-5">
         {% if cloths %}
-        <h5 class="my-4 text-center">Clothes - Available for You</h5>
-        <div class="w3-row-padding">
-            <div class="col carousel slide my-3" data-ride="carousel">
-                <div class="carousel-inner no-padding">
-                    <div class="carousel-item active">
-                        {% for i in cloths.0 %}
-                        <div class="w3-third w3-container w3-margin-bottom">
-                            <div class="card" style="background-color: #f5f5f5;">
-                                <img src="{{ i.img.url }}" alt="Cloth Image" style="height: 250px; width: 100%;">
+        <h5 class="my-4 text-center" style="font-family: 'Poppins', sans-serif; font-size: 1.6rem; color: #222; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
+            Clothes - Available for You
+          </h5>
+          
+          
+        <div id="clothesCarousel" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+                {% for i in cloths.0|slice:":3" %}
+                <li data-target="#clothesCarousel" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
+                {% endfor %}
+            </ol>
+            <div class="carousel-inner">
+                {% for cloth in cloths.0 %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class="row justify-content-center">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <img src="{{ cloth.img.url }}" alt="Cloth Image" class="card-img-top">
                                 <div class="card-body">
-                                    <h5 class="card-title"><b><h3>₹{{ i.rent_cost }}</h3></b></h5>
-                                    <p class="card-text">{{ i.description|slice:"0:30" }}...</p>
-                                    <p><b>{{ i.brand }}</b> • {{ i.color }} • {{ i.size }}</p>
-                                    <form action="/cloth_descr" method="get" style="margin-bottom: 5px;">
-                                        <button name="id" value="{{ i.cloth_id }}" style="background-color: grey;" class="btn btn-sm btn-dark">Quick view</button>
+                                    <h5 class="card-title">₹{{ cloth.rent_cost }}</h5>
+                                    <p class="card-text">{{ cloth.description|slice:"0:30" }}...</p>
+                                    <p><b>{{ cloth.brand }}</b> • {{ cloth.color }} • {{ cloth.size }}</p>
+                                    <form action="/cloth_descr" method="get">
+                                        <button name="id" value="{{ cloth.cloth_id }}" class="btn btn-sm btn-dark">Quick view</button>
                                     </form>
                                 </div>
                             </div>
                         </div>
-                        {% if forloop.counter|divisibleby:3 and forloop.counter > 0 and forloop.counter < cloths.2 %}
-                    </div>
-                    <div class="carousel-item">
-                        {% endif %}
-                        {% endfor %}
                     </div>
                 </div>
+                {% endfor %}
             </div>
+            <a class="carousel-control-prev" href="#clothesCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#clothesCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
         </div>
         {% endif %}
     </div>
 </div>
-{% endblock %}
+{% endblock %}</form></div>

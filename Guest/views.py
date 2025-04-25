@@ -33,17 +33,20 @@ def index(request):
         context.update({'house': houses})
     return HttpResponse(template.render(context, request))
 
-
+from user.models import CarouselImages
 def index2(request):
     template = loader.get_template('index2.html')
     context = {}
 
     cloths = Cloth.objects.all().filter(is_approved=True)
+    slides = CarouselImages.objects.filter(is_active=True).order_by('priority')
     if cloths:
         n = len(cloths)
         nslide = n // 3 + (n % 3 > 0)
         cloths_data = [cloths, range(1, nslide), n]
         context.update({'cloths': cloths_data})
+        context.update({'images': slides})
+        
 
     return HttpResponse(template.render(context, request))
 

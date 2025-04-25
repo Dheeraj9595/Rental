@@ -182,3 +182,14 @@ class Contact(models.Model):
 
     def __str__(self):
         return str(self.contact_id)
+
+
+class CarouselImages(models.Model):
+    title = models.CharField(max_length=100, blank=True, null=True)
+    image = models.ImageField(upload_to='carousel_images/', blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    priority = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.title if self.title else f"Image {self.pk}"
