@@ -166,9 +166,11 @@ class Cloth(models.Model):
     description = models.TextField(blank=True, null=True)  # Description of the cloth
     img = models.ImageField(upload_to='cloth_images/', height_field=None, width_field=None, max_length=100)  # Image of the cloth
     date_added = models.DateField(auto_now=True, auto_now_add=False)  # Date when the cloth was added
+    is_approved = models.BooleanField(default=False)  # Approval status
 
     def __str__(self):
         return f"{self.type} - {self.size} - {self.cloth_id}"
+
 
 
 class Contact(models.Model):

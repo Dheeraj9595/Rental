@@ -38,7 +38,7 @@ def index2(request):
     template = loader.get_template('index2.html')
     context = {}
 
-    cloths = Cloth.objects.all()
+    cloths = Cloth.objects.all().filter(is_approved=True)
     if cloths:
         n = len(cloths)
         nslide = n // 3 + (n % 3 > 0)
@@ -312,15 +312,15 @@ def post_cloth(request):
             user_obj = User.objects.get(email=request.user.email)
 
             cloth = Cloth.objects.create(
-                user_email=user_obj.lower(),
+                user_email=user_obj,
                 size=size,
-                type=cloth_type.lower(),
-                brand=brand.lower(),
-                material=material.lower(),
-                color=color.lower(),
+                type=cloth_type,
+                brand=brand,
+                material=material,
+                color=color,
                 rent_cost=rent_cost,
                 availability=availability,
-                description=description.lower(),
+                description=description,
                 img=img  # img will be None if not provided
             )
             messages.success(request, 'Cloth posted successfully.')
@@ -445,6 +445,18 @@ class ClothViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user_email=self.request.user)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+
+        response_data = {
+            "status": "success",
+            "count": queryset.count(),
+            "data": serializer.data
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
+    
 
 import json
 
