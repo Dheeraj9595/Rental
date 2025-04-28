@@ -20,23 +20,9 @@ from django.utils.http import urlsafe_base64_encode
 from user.models import *
 
 
-def index(request):
-    template = loader.get_template("index.html")
-    context = {}
+import logging
 
-    room = Room.objects.all()
-    if bool(room):
-        n = len(room)
-        nslide = n // 3 + (n % 3 > 0)
-        rooms = [room, range(1, nslide), n]
-        context.update({"room": rooms})
-    house = House.objects.all()
-    if bool(house):
-        n = len(house)
-        nslide = n // 3 + (n % 3 > 0)
-        houses = [house, range(1, nslide), n]
-        context.update({"house": houses})
-    return HttpResponse(template.render(context, request))
+logger = logging.getLogger('django')
 
 
 from user.models import CarouselImages
@@ -54,7 +40,7 @@ def index2(request):
         cloths_data = [cloths, range(1, nslide), n]
         context.update({"cloths": cloths_data})
         context.update({"images": slides})
-
+    logger.info(f"User {request.user.email} accessed the index2 page.")
     return HttpResponse(template.render(context, request))
 
 
@@ -76,6 +62,7 @@ def search(request):
         context.update({"type": typ, "q": q})
 
         results = Cloth.objects.filter(Q(type__icontains=q) | Q(brand__icontains=q))
+        logger.info(f"Search query: {q} by user: {request.user.email}")
 
         if not results.exists():
             messages.success(request, "No matching results for your query..")
@@ -96,6 +83,7 @@ def about(request):
     house = Cloth.objects.all()
     if bool(house):
         context.update({"house": house})
+    logger.info(f"User {request.user.email} accessed the about page.")    
     return HttpResponse(template.render(context, request))
 
 
@@ -117,29 +105,11 @@ def contact(request):
         contact = Contact(subject=subject, email=email, body=body)
         contact.save()
         context.update({"msg": "msg send to admin"})
+        logger.info(f"Contact form submitted by user: {request.user.email}")
         return HttpResponse(template.render(context, request))
     else:
         context.update({"msg": ""})
         return HttpResponse(template.render(context, request))
-
-
-def descr(request):
-    template = loader.get_template("desc.html")
-    context = {}
-    if request.method == "GET":
-        id = request.GET["id"]
-        try:
-            room = Room.objects.get(room_id=id)
-            context.update({"val": room})
-            context.update({"type": "Apartment"})
-            user = User.objects.get(email=room.user_email)
-        except:
-            house = House.objects.get(house_id=id)
-            context.update({"val": house})
-            context.update({"type": "House"})
-            user = User.objects.get(email=house.user_email)
-    context.update({"user": user})
-    return HttpResponse(template.render(context, request))
 
 
 def cloth_descr(request):
@@ -158,10 +128,6 @@ def cloth_descr(request):
             return HttpResponse("Cloth not found", status=404)
 
     return HttpResponse(template.render(context, request))
-
-
-# def loginpage(request):
-#     return render(request, 'login.html', {'msg': ''})
 
 
 def register(request):
@@ -209,7 +175,9 @@ def register(request):
         password=pas,
     )
     user.save()
+    logger.info(f"New user registered: {email}")
     login(request, user)
+    messages.success(request, "Registration successful. You can now log in.")
     return redirect("/profile/")
 
 
@@ -241,50 +209,8 @@ def profile(request):
     }
     context.update({"room": rooms})
     context.update({"house": houses})
+    logger.info(f"User {request.user.email} accessed the profile page.")
     return render(request, "profile.html", context=context)
-
-
-@login_required(login_url="/login")
-def post(request):
-    if request.method == "GET":
-        context = {"user": request.user}
-        return render(request, "post.html", context)
-    elif request.method == "POST":
-        try:
-            dimention = request.POST["dimention"]
-            location = request.POST["location"]
-            city = request.POST["city"]
-            state = request.POST["state"]
-            cost = request.POST["cost"]
-            hall = request.POST["hall"]
-            kitchen = request.POST["kitchen"]
-            balcany = request.POST["balcany"]
-            bedroom = request.POST["bedroom"]
-            ac = request.POST["AC"]
-            desc = request.POST["desc"]
-            img = request.FILES["img"]
-            user_obj = User.objects.filter(email=request.user.email)[0]
-            bedroom = int(bedroom)
-            cost = int(cost)
-            room = Room.objects.create(
-                user_email=user_obj,
-                dimention=dimention,
-                location=location,
-                city=city,
-                state=state,
-                cost=cost,
-                hall=hall,
-                kitchen=kitchen,
-                balcany=balcany,
-                bedrooms=bedroom,
-                AC=ac,
-                desc=desc,
-                img=img,
-            )
-            messages.success(request, "submitted successfully..")
-            return render(request, "post.html")
-        except Exception as e:
-            return HttpResponse(status=500)
 
 
 from django.http import JsonResponse
@@ -334,58 +260,11 @@ def post_cloth(request):
                 img=img,  # img will be None if not provided
             )
             messages.success(request, "Cloth posted successfully.")
+            logger.info(f"Cloth posted successfully by user: {request.user.email}")
             return render(request, "post_cloth.html")
 
         except Exception as e:
             return HttpResponse(f"Error: {str(e)}", status=500)
-
-
-@login_required(login_url="/login")
-def posth(request):
-    if request.method == "GET":
-        context = {"user": request.user}
-        return render(request, "posth.html", context)
-    else:
-        try:
-            area = request.POST["area"]
-            floor = request.POST["floor"]
-            location = request.POST["location"].lower()
-            city = request.POST["city"].lower()
-            state = request.POST["state"].lower()
-            cost = request.POST["cost"]
-            hall = request.POST["hall"].lower()
-            kitchen = request.POST["kitchen"].lower()
-            balcany = request.POST["balcany"].lower()
-            bedroom = request.POST["bedroom"]
-            ac = request.POST["AC"].lower()
-            desc = request.POST["desc"].upper()
-            img = request.FILES["img"]
-            bedroom = int(bedroom)
-            cost = int(cost)
-            user_obj = User.objects.filter(email=request.user.email)[0]
-            house = House.objects.create(
-                user_email=user_obj,
-                location=location,
-                city=city,
-                state=state,
-                cost=cost,
-                hall=hall,
-                kitchen=kitchen,
-                balcany=balcany,
-                bedrooms=bedroom,
-                area=area,
-                floor=floor,
-                AC=ac,
-                desc=desc,
-                img=img,
-            )
-            messages.success(request, "submitted successfully..")
-            return render(request, "posth.html")
-        except Exception as e:
-            print()
-            print(e)
-            print()
-            return HttpResponse(status=500)
 
 
 def deleter(request):
@@ -394,6 +273,7 @@ def deleter(request):
         instance = Cloth.objects.get(cloth_id=id)
         instance.delete()
         messages.success(request, "Cloth details deleted successfully..")
+        logger.info(f"Cloth with ID {id} deleted by user: {request.user.email}")
     return redirect("/profile")
 
 
@@ -416,6 +296,7 @@ def login_view(request):
 
     if user is not None:
         login(request, user)
+        logger.info(f"User {email} logged in successfully.")
         return redirect("/")
     else:
         template = loader.get_template("login.html")
@@ -476,6 +357,8 @@ def generate_token(request):
         return JsonResponse({"error": "User not found."}, status=404)
     try:
         token = Token.objects.get(user=user)
+        logger.info(f"Token already exists for user: {user.email}")
     except Token.DoesNotExist:
         token = Token.objects.create(user=user)
+        logger.info(f"Token created for user: {user.email}")
     return JsonResponse({"token": f"Token {token.key}"}, status=200)
