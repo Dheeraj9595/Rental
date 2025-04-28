@@ -31,6 +31,7 @@ from user.models import CarouselImages
 def index2(request):
     template = loader.get_template("index2.html")
     context = {}
+    user_email = request.user.email if request.user.is_authenticated else None
 
     cloths = Cloth.objects.all().filter(is_approved=True)
     slides = CarouselImages.objects.filter(is_active=True).order_by("priority")
@@ -40,7 +41,7 @@ def index2(request):
         cloths_data = [cloths, range(1, nslide), n]
         context.update({"cloths": cloths_data})
         context.update({"images": slides})
-    logger.info(f"User {request.user.email} accessed the index2 page.")
+    logger.info(f"User {user_email} accessed the index2 page.")
     return HttpResponse(template.render(context, request))
 
 
