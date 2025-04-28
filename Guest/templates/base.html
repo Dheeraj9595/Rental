@@ -20,6 +20,7 @@
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&family=Playfair+Display:ital,wght@1,600&family=Lobster&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'css/chatbot.css' %}">
 
         {% block style %}
         {% endblock %}
@@ -86,12 +87,12 @@
                     </ul>
                 </div>
                 <div class="w3-third">
-                    <h3>Trending locations</h3>
+                    <h3>Trending Cloths</h3>
                     <ul class="w3-ul w3-hoverable">
                         <li class="w3-padding-16">
-                            <span> Hyderabad</span><br>
-                            <span> Bhubaneshwar</span><br>
-                            <span> Chandigarh</span>
+                            <span> Suits</span><br>
+                            <span> Sherwanis</span><br>
+                            <span> Evening Dress</span>
                         </li>
                     </ul>
                 </div>
@@ -99,22 +100,10 @@
                     <h3>POPULAR TAGS</h3>
                     <br>
                     <p>
-                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">Delhi</span>
-                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">Mumbai</span>
-                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">2BHK</span>
-                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">3BHK</span>
-                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">Banglore</span>
-                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">Hall</span>
-                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">5K</span>
-                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">Non AC</span>
-                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">Family</span>
-                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">AC</span>
-                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">Flat</span>
-                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">Near me</span>
-                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">House</span>
-                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">Room</span>
-                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">Clean</span>
-                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">Room</span>
+                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">Suits</span>
+                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">Red jacket</span>
+                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">black suit</span>
+                        <span class="w3-tag w3-grey w3-small w3-margin-bottom">white shirt</span>
                     </p>
                 </div>
             </div>
@@ -157,8 +146,26 @@
         <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
         {% block script %}
+        <!-- Floating Chatbot Button -->
+        <button class="chatbot-toggle" onclick="toggleChatbot()">💬 Chat</button>
+        <!-- Chatbot Window -->
+        <div class="chatbot-container" id="chatbotContainer">
+            <div class="chatbot-header">
+                <span>Chatbot</span>
+                <button class="close-btn" onclick="toggleChatbot()">✖</button>
+            </div>
+            <div class="box" id="chatBox">
+                <!-- Messages will be dynamically inserted here -->
+            </div>
+            <div class="typing-area">
+                <div class="input-field">
+                    <input type="text" id="userMessage" placeholder="Type your message" required>
+                    <button onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+        <script src="{% static 'js/chatbot.js' %}"></script>
         {% endblock %}
     </body>
 </html>

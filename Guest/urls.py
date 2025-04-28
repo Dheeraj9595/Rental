@@ -53,6 +53,9 @@ urlpatterns = [
     re_path(r'^deleteh', views.deleteh),
     re_path(r'^search/', views.search),
     re_path(r'token/', views.generate_token),
+    #chatbot
+    re_path(r"chatbot/chat/", views.chatbot_response),
+    re_path(r"chatbotpage/", views.chatbot_page),
 ]
 
 urlpatterns+= staticfiles_urlpatterns()

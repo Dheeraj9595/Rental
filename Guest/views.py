@@ -362,3 +362,51 @@ def generate_token(request):
         token = Token.objects.create(user=user)
         logger.info(f"Token created for user: {user.email}")
     return JsonResponse({"token": f"Token {token.key}"}, status=200)
+
+
+#-------------------chatbot implementation-----------------------------------------------------------------------
+
+
+#Chatbot
+import os
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from groq import Groq
+
+# Initialize Groq client
+client = Groq(api_key="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")
+
+@csrf_exempt
+def chatbot_response(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        user_message = data.get("message", "")
+
+        # retrived_docs = retrieve_documents(user_message)
+        # context = " ".join(retrived_docs) if retrived_docs else ""
+
+        PROMPT = (f": \nYou are a assistant.\nThis is a rented cloths website where user can borrow or rent there cloths.\nso help them with there questions.\nAnswer questions related to docs which are in db or anything asked for.\n"
+                  f"if user ask about the services tell them = we have 2 services 1. is rent your cloths 2. buy rented cloths\n if you are agree we will store your cloths in our rentbuy HUB and it will be stored there for 7 days and in between\n"
+                  f"if any borrower rent your cloths the delivery charges will be free so feel free to rent and buy cloths.")
+        try:
+            chat_completion = client.chat.completions.create(
+                messages=[{"role": "system", "content": PROMPT},  # System prompt
+                    {"role": "user", "content": user_message}],
+                model="llama-3.1-8b-instant",
+            )
+
+            bot_reply = chat_completion.choices[0].message.content
+            # breakpoint()
+            return JsonResponse({"response": bot_reply})
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+#export GROQ_API_KEY="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"
+from django.shortcuts import render
+
+def chatbot_page(request):
+    return render(request, 'chatbot.html')

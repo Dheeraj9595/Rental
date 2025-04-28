@@ -1,0 +1,128 @@
+/* Floating Chatbot Button */
+.chatbot-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+	width: 116px;
+}
+
+.chatbot-toggle:hover {
+    background: #0056b3;
+}
+
+/* Chatbot Container */
+.chatbot-container {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 350px;
+    max-width: 90%;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    display: none; /* Initially hidden */
+    flex-direction: column;
+}
+
+/* Show chatbot when active */
+.chatbot-container.active {
+    display: flex;
+}
+
+/* Chatbot Header */
+.chatbot-header {
+    background: #007bff;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-size: 18px;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chatbot-header .close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+	transform: translate(18px, -11px);
+}
+
+/* Chat Box */
+.box {
+    padding: 10px;
+    height: 350px;
+    overflow-y: auto;
+}
+
+/* Input Area */
+.typing-area {
+    background: #efefef;
+    padding: 10px;
+}
+
+.input-field {
+    display: flex;
+    gap: 10px;
+}
+
+.input-field input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+	width: 232px;
+}
+
+.input-field button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.input-field button:hover {
+    background: #0056b3;
+}
+
+/* User Message Styling */
+.box .item.right .msg {
+    background: #efefef; /* Light gray background */
+    color: #333;
+    border-radius: 10px;
+    padding: 10px;
+    max-width: 75%;
+    word-wrap: break-word;
+}
+
+/* Bot Message Styling */
+.box .item .msg {
+    background: #007bff; /* Blue background */
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+    max-width: 75%;
+    word-wrap: break-word;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+    font-weight: bold; /* Makes bot response more readable */
+}
+
+/* Distinguish bot responses with a border */
+.box .item .msg.bot {
+    background: #28a745; /* Green background */
+    color: white;
+    border-left: 5px solid #1e7e34; /* Green border */
+}
