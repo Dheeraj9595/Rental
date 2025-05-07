@@ -390,7 +390,7 @@ fake = Faker()
 def generate_random_cloths(request):
     if request.method == "POST":
         try:
-            count = int(request.POST.get("count", 5))
+            count = int(request.POST.get("count", 500))
             user = request.user
             sizes = ["S", "M", "L", "XL"]
             types = ["Shirt", "Pants", "Dress", "Jacket"]
@@ -421,16 +421,40 @@ def generate_random_cloths(request):
         except Exception as e:
             return HttpResponse(f"Error: {str(e)}", status=500)
 
+from django.core.paginator import Paginator
+
+
+# def all_clothes_view(request):
+#     template = loader.get_template("cloth_listing.html")
+#     context = {}
+#     cloths = Cloth.objects.all().filter(is_approved=True)
+#     paginator = paginator(cloths, 20)
+#     page_number = request.GET.get("page")
+#     page_obj = paginator.get_page(page_number)
+#     context.update({"page_obj": page_obj})
+#     if cloths:
+#         context.update({"cloths": cloths})
+#     logger.info(f"User {request.user.email} accessed the all_clothes_view page.")
+#     return HttpResponse(template.render(context, request))
+
 
 def all_clothes_view(request):
-    template = loader.get_template("cloth_listing.html")
-    context = {}
-    cloths = Cloth.objects.all().filter(is_approved=True)
-    if cloths:
-        context.update({"cloths": cloths})
-    logger.info(f"User {request.user.email} accessed the all_clothes_view page.")
-    return HttpResponse(template.render(context, request))
+    cloths = Cloth.objects.filter(is_approved=True).order_by('-cloth_id')
+    paginator = Paginator(cloths, 12)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
 
+    context = {
+        "page_obj": page_obj,
+        "cloths": page_obj,
+    }
+
+    if request.user.is_authenticated:
+        logger.info(f"User {request.user.email} accessed the all_clothes_view page.")
+    else:
+        logger.info("An anonymous user accessed the all_clothes_view page.")
+
+    return render(request, "cloth_listing.html", context)
 
 #-------------------chatbot implementation-----------------------------------------------------------------------
 
