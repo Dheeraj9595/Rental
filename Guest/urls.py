@@ -53,7 +53,10 @@ urlpatterns = [
     re_path(r'^deleteh', views.deleteh),
     re_path(r'^search/', views.search),
     re_path(r'token/', views.generate_token),
+    #bulk create
+    re_path(r'random/', views.generate_random_cloths),
     #chatbot
+    re_path(r'allclothes/', views.all_clothes_view),
     re_path(r"chatbot/chat/", views.chatbot_response),
     re_path(r"chatbotpage/", views.chatbot_page),
 ]

@@ -364,6 +364,73 @@ def generate_token(request):
         logger.info(f"Token created for user: {user.email}")
     return JsonResponse({"token": f"Token {token.key}"}, status=200)
 
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.http import HttpResponse
+from decimal import Decimal
+import random
+from faker import Faker
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.decorators import login_required
+
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from decimal import Decimal
+import random
+from faker import Faker
+
+fake = Faker()
+
+@api_view(["POST"])
+@authentication_classes([TokenAuthentication])  # Use TokenAuthentication here
+@permission_classes([IsAuthenticated])
+def generate_random_cloths(request):
+    if request.method == "POST":
+        try:
+            count = int(request.POST.get("count", 5))
+            user = request.user
+            sizes = ["S", "M", "L", "XL"]
+            types = ["Shirt", "Pants", "Dress", "Jacket"]
+            brands = ["Nike", "Adidas", "Puma", "Reebok"]
+            materials = ["Cotton", "Polyester", "Wool", "Silk"]
+            colors = ["Red", "Blue", "Green", "Black", "White"]
+
+            cloths = []
+            for _ in range(count):
+                cloth = Cloth(
+                    user_email=user,
+                    size=random.choice(sizes),
+                    type=random.choice(types),
+                    brand=random.choice(brands),
+                    material=random.choice(materials),
+                    color=random.choice(colors),
+                    rent_cost=Decimal(random.uniform(10, 100)).quantize(Decimal('0.01')),
+                    availability=random.choice([True, False]),
+                    description=fake.text(max_nb_chars=100),
+                    img="cloth_images/logo_1.jpg",  # use placeholder image
+                    is_approved=False
+                )
+                cloths.append(cloth)
+
+            Cloth.objects.bulk_create(cloths)
+            return JsonResponse({"message": f"{count} random cloths created successfully."}, status=201)
+
+        except Exception as e:
+            return HttpResponse(f"Error: {str(e)}", status=500)
+
+
+def all_clothes_view(request):
+    template = loader.get_template("cloth_listing.html")
+    context = {}
+    cloths = Cloth.objects.all().filter(is_approved=True)
+    if cloths:
+        context.update({"cloths": cloths})
+    logger.info(f"User {request.user.email} accessed the all_clothes_view page.")
+    return HttpResponse(template.render(context, request))
+
 
 #-------------------chatbot implementation-----------------------------------------------------------------------
 

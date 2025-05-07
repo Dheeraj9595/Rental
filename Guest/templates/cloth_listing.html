@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/index2.css' %}">
+<style>
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 15px;
+    background-color: #fff;
+    font-family: 'Poppins', sans-serif;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-text {
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.btn-dark {
+    margin-top: 10px;
+    font-size: 0.8rem;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h5 class="my-4 text-center" style="font-family: 'Poppins', sans-serif; font-size: 1.6rem;">
+        Browse All Available Clothes
+    </h5>
+
+    <div class="grid-container">
+        {% for cloth in cloths %}
+        <div class="card">
+            <img src="{{ cloth.img.url }}" alt="Cloth Image">
+            <div class="card-body">
+                <h5 class="card-title">₹{{ cloth.rent_cost }}</h5>
+                <p class="card-text">{{ cloth.description|truncatechars:50 }}</p>
+                <p><b>{{ cloth.brand }}</b> • {{ cloth.color }} • {{ cloth.size }}</p>
+                <form action="/cloth_descr" method="get">
+                    <button name="id" value="{{ cloth.cloth_id }}" class="btn btn-sm btn-dark">Quick view</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
